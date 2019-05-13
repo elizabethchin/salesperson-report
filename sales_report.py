@@ -1,36 +1,22 @@
 """Generate sales report showing total melons each salesperson sold."""
 
+def get_melons_sold_by_salesperson(log_file_path):
+    mels_by_sales = {}
 
-salespeople = []
-melons_sold = []
+    with open(log_file_path) as f:
+        for line in f:
+            line = line.rstrip()
 
-f = open('sales-report.txt')
-#opens text file
-#can improve code by making this into a function and refactor code
-for line in f:
-    #iterates the file line by line
-    line = line.rstrip()
-    #removes whitespaces to the right of the ine
-    entries = line.split('|')
-    #splits the line at | and makes it a string
-    salesperson = entries[0]
-    #sales person is index 0
-    melons = int(entries[2])
-    #number of melons sold is at index 2
+            salesperson_name, total_dollars, melons_sold = line.split('|') 
 
-    if salesperson in salespeople:
-        #loop through salespeople list for sales person
-        position = salespeople.index(salesperson)
-        #get the index of the sales person in the list
-        melons_sold[position] += melons
-        #get the amount of melons sold and add to list
+            if salesperson_name in mels_by_sales:
+                mels_by_sales[salesperson_name] += int(melons_sold)
+            else:
+                mels_by_sales[salesperson_name] = int(melons_sold)
+    return mels_by_sales
 
-    else:
-        salespeople.append(salesperson)
-        #add salesperson
-        melons_sold.append(melons)
-        #add melons sold
+def print_sales_report(melons_sold_by_salesperson):
+    for salesperson_name, melons_sold in melons_sold_by_salesperson.items():
+        print(f"{salesperson_name} sold {melons_sold} melons")
 
-for i in range(len(salespeople)):
-    #prints all the sales person and number of melons sold
-    print(f'{salespeople[i]} sold {melons_sold} melons')
+print_sales_report(get_melons_sold_by_salesperson('sales-report.txt'))
